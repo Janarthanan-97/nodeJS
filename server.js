@@ -1,20 +1,14 @@
-let exp = require('express')
-const fs = require('fs/promises');
+let express = require('express');
+let cors = require('cors')
+let app = express();
+let RouterToIndex = require('./routes/index.js')
 
-let app = exp();
+app.use(express.json())
+app.use(cors());
 
-app.get('/', (req, res)=>{
-    let content = Date().split(' ')
-// console.log(content)
-let date = content[4].split(':').join("-")
+app.use('/', RouterToIndex);
 
-    fs.writeFile(`./${content[1]}${content[2]}-${date}.txt`, content, {flag:'w'}, (error)=>{
-        if(error)console.log(err)
-    })
-    res.status(200).send("Please refresh page to create new file with time stamp");
-    
-})
+app.listen(3001);
 
-app.listen(3001)
 
 

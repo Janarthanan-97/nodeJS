@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Hall 1",
+        "type": "Non Dulex",
+        "Rent": 1000,
+        "BookingHistory":[{"name": "hari", "mail":"hariharan@gmail.com", "phone":"9876543210"}],
+        "furnished": "furnished"
+    }
+]
