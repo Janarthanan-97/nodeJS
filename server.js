@@ -1,12 +1,15 @@
 let express = require('express');
 let cors = require('cors')
 let app = express();
-let RouterToIndex = require('./routes/index.js')
+let routerToRooms = require('./routes/indexForRoom.js');
+let routerToUser = require('./routes/inderForUsers.js');
 
 app.use(express.json())
 app.use(cors());
 
-app.use('/', RouterToIndex);
+app.use('/rooms', routerToRooms);
+app.use('/users', routerToUser);
+
 
 app.listen(3001);
 

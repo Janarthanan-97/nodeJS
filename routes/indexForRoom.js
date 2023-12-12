@@ -1,6 +1,6 @@
 let express = require('express');
-let router = express.Router();
-let roomBookingAPIModel = require('../models/schemaForDB.js')
+let router = express.Router(); 
+
 
 let roomAPIImportObject = require('../controllers/Rooms-CRUD')
 
