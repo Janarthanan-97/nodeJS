@@ -1,11 +1,10 @@
 let mongoose = require('mongoose');
 let dotenv = require('dotenv')
 
-let {MONGODB_URI, ROOM_API} = dotenv.config().parsed;
-
+dotenv.config();
 
 try {
-    mongoose.connect(`${MONGODB_URI}/${ROOM_API}`)
+    mongoose.connect(`${process.env.MONGODB_URI}/${process.env.ROOM_API}`)
     
 } catch (error) {
     console.log(error)
