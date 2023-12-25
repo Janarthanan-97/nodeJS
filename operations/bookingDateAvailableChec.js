@@ -10,8 +10,6 @@ let isDateAvailable = (array, object) => {
             let startDate = new Date(array[index].startDate);
             let endDate = new Date(array[index].endDate);
     
-            console.log(startDate, endDate, toBeBookStartDate, toBeBookendDate)
-    
             if (toBeBookStartDate >= startDate && toBeBookStartDate <= endDate) {
                 return false;
             }

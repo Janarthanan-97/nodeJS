@@ -1,5 +1,7 @@
 let userAPIModel = require('../models/schemaForUser')
 let roomBookingAPIModel = require('../models/schemaForDB.js')
+let jwt = require('jsonwebtoken')
+
 
 const getAllUserFromModel = async (req, res) => {
     try {
@@ -9,6 +11,25 @@ const getAllUserFromModel = async (req, res) => {
     } catch (error) {
         res.send(error);
     }
+}
+
+const login = async (req, res)=>{
+    const SECRET = "APPLE";
+    const {userName, password} = req.body;
+    const user = await userAPIModel.findOne({'userID': userName});
+    if(user==null){
+        return res.status(400).send({message: "User not found"})
+    }
+    if(password == user.password){
+        const token = jwt.sign({
+       userName
+        }, SECRET)
+        res.status(200).send(token)
+    }
+    else{
+        res.status(400).send('Incorrect password')
+    }
+   
 }
 
 const getRoomsForUser = async (req, res) => {
@@ -76,4 +97,4 @@ let deleteUser = async (req, res) => {
 }
 
 
-module.exports = { getAllUserFromModel, getRoomsForUser, createUser, UpdateUser, deleteUser };
+module.exports = { getAllUserFromModel, getRoomsForUser, login, createUser, UpdateUser, deleteUser };
