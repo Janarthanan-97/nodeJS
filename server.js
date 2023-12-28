@@ -1,17 +1,16 @@
-let express = require('express');
-let cors = require('cors')
-let app = express();
-let routerToRooms = require('./routes/indexForRoom.js');
-let routerToUser = require('./routes/inderForUsers.js');
+const express = require('express');
+const userRouter = require('./routes/userRoute')
+const cors = require('cors')
+
+const app = express();
 
 app.use(express.json())
-app.use(cors());
-
-app.use('/rooms', routerToRooms);
-app.use('/users', routerToUser);
-
-
-app.listen(3001);
+app.use(cors())
 
 
 
+app.use('/', userRouter)
+
+
+
+app.listen(3001)
