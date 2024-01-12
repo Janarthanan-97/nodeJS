@@ -1,138 +1,58 @@
-const User = require('../module/userSchema');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const randomstring = require('randomstring');
-const sendMail = require('../operations/nodemailer');
-const { trusted } = require('mongoose');
+const UserDB = require('../module/userSchema')
+const randomString = require('randomstring')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-const SECRET_KEY = 'APPLE';
-
-const userController = {
-
-    //Signup and generate activation link with token
-    signup: async (req, res) => {
+const userControler = {
+    register: async (req, res) => {
         try {
-            
-            const { name, email, password } = req.body;
-            console.log(name, email)
-            //check if the user already exists
-            const existingUser = await User.findOne({ email });
-
-            if (existingUser) {
-                return res.status(409).json({ message: 'User already exists' });
-            }
-
-            //create randomstring for account activation                  
-            let token = randomstring.generate({
-                length: 16,
-                charset: "alphanumeric",
-            });
-
-            //creating expiry after 1 hour
-            let expiry = new Date(Date.now() + 3600 * 1000);
-
-            //hash the password before savingg
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            //create new USer
-
-            const newUser = new User({
-                name,
-                email,
-                password: hashedPassword,
-                resetExpiry: expiry,
-                resetToken: token,
-            });
-
-            //save the user
-            await newUser.save();
-
-            //Send Email along with link to activate the account
-
-            let link = `${process.env.FE_URL}/activation_page/${token}`;
-
-            await sendMail(email, "URL Shortener - Account Activation", `Hello !!, You have register to create a account on URL Shortener application.
-
-                Please click the following link to activate your account: ${link}`);
-            res.status(200).send({
-                message: `Activation link sent to mail ${email} and link is ${link}`,
-            });
-
-            // res.status(201).json({message:"Email has been sent to the Mail ID for account activation"})
-
-        }
-        catch (error) {
-            console.error('Error sending link to Email', error)
-            // res.status(500).json({message:'Activation Error'})
+            let newUser = req.body;
+            const user = await UserDB.findOne({ email: newUser.email })
+            if (user) { res.send({ message: "User already exist" }) }
+            newUser.password = await bcrypt.hash(newUser.password, 10)
+            const resetToken = await randomString.generate({
+                length: 20,
+                charset: 'alphanumeric'
+            })
+            newUser = { ...newUser, resetToken, resetExpiry: new Date(Date.now() + 3600 * 1000) }
+            await UserDB.create(newUser);
+            res.status(200).send({ message: "user created successfully" })
+        } catch (error) {
+            res.send({ message: error })
         }
     },
-
-    //Signin process and generate JWT Token
-    signin: async (req, res) => {
+    verify: async (req, res) => {
+        const { resetToken } = req.params
+        let user = await UserDB.findOne({ resetToken: resetToken })
+        user.activated = true;
+        user.resetToken = ''
+        user.save()
+        res.status(200).send({ message: "Account activated successfully" })
+    },
+    login: async (req, res) => {
         try {
             const { email, password } = req.body;
-            
-            //find the user by email
-            const user = await User.findOne({ email });
-
-            if (!user) {
-                return res.status(401).json({ message: 'User not found' });
+            const user = await UserDB.findOne({ email: email });
+            if (!user) { res.send({ message: "user not available" }) }
+            else {
+                const isPasswordMatch = bcrypt.compare(password, user.password)
+                if (!isPasswordMatch) { res.send({ message: "Incorrect password" }) }
+                else {
+                    if (user.activated == false) { res.send({ message: "Account not activated" }) }
+                    else {
+                        const token = jwt.sign({ email: user.email }, "APPLE", { expiresIn: '1h' })
+                        res.status(200).send(token)
+                    }
+                }
             }
-            //compare passwords
 
-            const passwordMatch = await bcrypt.compare(password, user.password);
 
-            if (!passwordMatch) {
-                return res.status(401).json({ message: 'Password wrong' });
-            }
 
-            //generate and send the jwt token 
-
-            const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
-            res.json({ token });
+        } catch (error) {
+            res.send(error)
         }
-        catch (error) {
-            console.log('Error signing in user', error);
-            res.status(500).json({ message: 'Internal Server error' });
-        }
-    },
 
-    //To verify the account activation link token
-    accountVerify: async (req, res) => {
-        try {
-            const { token } = req.body;
-
-            let userDB = await User.findOne({ resetToken: token });
-
-            //checking token is present in db is the token sent by the user or not
-            const isTokenValid = userDB.resetToken === token;
-
-            //checking if the time limit to change the password has the expired
-            const isntExpired = userDB.resetExpiry > Date.now();
-
-            if (isTokenValid && isntExpired) {
-
-                //deleting the token and expiry time update the activated status to true
-                const updateActiveStatus = await User.findOneAndUpdate(
-                    { resetToken: token },
-                    {
-                        activated: true,
-                        resetToken: undefined,
-                        resetExpiry: undefined,
-                    },
-                    { new: true }
-                );
-
-                res.status(200).send({ success: "Activation updated successfully" });
-            }
-            else res.status(400).send({ Error: "Invalid Link or Expired !!!" });
-
-        }
-        catch (error) {
-            console.log("Activation failed in backend", error);
-        }
-    },
-
+    }
 }
 
-module.exports = userController;
+module.exports = userControler

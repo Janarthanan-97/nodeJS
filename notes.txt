@@ -1,0 +1,25 @@
+items
+    {
+        name:
+        price:
+        stock:
+    }
+
+orders:
+    {
+        CostumerName:
+        Costumernumber:
+        Orders:[{
+                    date:
+                    items:[]
+                }]
+    }
+users:
+    {
+        name:
+        email:
+        password:
+        activated:
+        resetToken:
+        resetExpiry
+    }

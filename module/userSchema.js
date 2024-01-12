@@ -1,45 +1,16 @@
 const mongoose = require('./mongooseConnect')
 
-
-const userSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        activated: {
-            type: Boolean,
-            default: false
-        },
-        resetToken: String,
-        resetExpiry: Date,
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now
-        },
-        url: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'URL-shortDB'
-        }],
-    }, {
-    collection: "URL-userDB",
-    versionKey: false
+const userSchema = new mongoose.Schema({
+    name : {type:String, required:[true, "user's name is required"]},
+    email: {type:String, required:[true, 'Email-ID is required']},
+    password:{type:String, required:[true, 'Password is required']},
+    activated: {type:Boolean, default : false},
+    resetToken:{type:String, default:""},
+},{
+    collection: 'users',
+    versionKey:false
 })
 
-const userDB = mongoose.model('URL-userDB', userSchema);
+const UserDB = mongoose.model('users', userSchema)
 
-module.exports = userDB;
-
+module.exports = UserDB
