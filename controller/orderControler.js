@@ -3,10 +3,9 @@ const OrderDB = require('../module/orderSchema')
 const orderControler = {
     addOrder: async (req, res)=>{
         const{customerNumber, customerName, orders} = req.body
-        console.log(orders[0].items)
         let order = await OrderDB.findOne({customerNumber : customerNumber})
         if(order){
-            order.orders.push({items:orders[0].items})
+            order.orders.push(orders)
             console.log(order)
             order.save();
             res.status(200).send({message: "Order updated successfully"})
@@ -20,10 +19,19 @@ const orderControler = {
         try {
             const{customerNumber}=req.body
             let order = await OrderDB.findOne({customerNumber:customerNumber})
+           if(order){
             res.status(200).send({message : order})
+           }
+           else{
+            res.send({message:''})
+           }
         } catch (error) {
             res.send({message: error})
         }
+    },
+    getAllOrder: async(req, res)=>{
+        let order = await OrderDB.find();
+        res.status(200).send(order)
     }
 }
 

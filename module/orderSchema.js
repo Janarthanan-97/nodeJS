@@ -19,4 +19,3 @@ const orderSchema = new mongoose.Schema({
 const OrderDB = mongoose.model("orders",orderSchema)
 
 module.exports = OrderDB
-

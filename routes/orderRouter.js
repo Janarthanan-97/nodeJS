@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.put('/getOrder', orderControler.getOrder)
 router.post('/addOrder', orderControler.addOrder)
+router.get('/getAllOrder', orderControler.getAllOrder)
 
 
 
