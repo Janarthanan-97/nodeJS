@@ -89,7 +89,7 @@ const userControler = {
                             from: process.env.EMAIL,
                             to: user.email,
                             subject: "Store register verification",
-                            text: `Activation link : http://localhost:5173/verify/${user.resetToken}`,
+                            text: `Activation link : https://jazzy-fenglisu-c53c8a.netlify.app/verify/${user.resetToken}`,
                         };
 
                         transporter.sendMail(message).then(() => {
@@ -137,7 +137,7 @@ const userControler = {
                     from: process.env.EMAIL,
                     to: user.email,
                     subject: "Store Password reset link",
-                    text: `Activation link : http://localhost:5173/password-reset/${resetToken}`,
+                    text: `Activation link : https://jazzy-fenglisu-c53c8a.netlify.app/password-reset/${resetToken}`,
                 };
 
                 transporter.sendMail(message).then(() => {
