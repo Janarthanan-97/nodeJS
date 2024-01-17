@@ -35,7 +35,7 @@ const userControler = {
                     from: process.env.EMAIL,
                     to: newUser.email,
                     subject: "Store register verification",
-                    text: `Activation link : http://localhost:5173/verify/${resetToken}`,
+                    text: `Activation link : https://jazzy-fenglisu-c53c8a.netlify.app/verify/${resetToken}`,
                 };
 
                 transporter.sendMail(message).then(() => {
