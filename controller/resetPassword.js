@@ -1,7 +1,7 @@
 const User = require('../module/userSchema');
 const bcrypt = require('bcrypt');
 const randomstring = require('randomstring');
-const sendMail = require('../operations/nodeMailer');
+const sendMail = require('../operations/nodemailer');
 
 const resetPassword = {
     sendToken: async (req, res) => {
