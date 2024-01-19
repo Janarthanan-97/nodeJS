@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer")
 const dotenv = require('dotenv')
 
 dotenv.config()
-
+//Testing for commit
 
 const sendMail = async (email, subject, text) => {
     const transporter = nodemailer.createTransport({
