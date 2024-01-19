@@ -2,7 +2,7 @@ const User = require('../module/userSchema');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
-const sendMail = require('../operations/nodemailer');
+const sendMail = require('./emailer');
 const { trusted } = require('mongoose');
 
 const SECRET_KEY = 'APPLE';
