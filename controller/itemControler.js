@@ -8,10 +8,10 @@ const itemControler = {
         let item = await ItemDB.findOne({name: newItem.name});
         
         if(item){
-            item.stock = await item.stock + newItem.stock;
-            item.price = newItem.price;
-            item.save()
-            res.status(200).send({message:"Item updated successfully"})
+            // item.stock = await Number(item.stock) + Number(newItem.stock);
+            // item.price = newItem.price;
+            // item.save()
+            res.status(200).send({message:"Item already exist"})
         }
        else{
         await ItemDB.create(newItem)
@@ -40,9 +40,9 @@ const itemControler = {
     },
     deleteItem: async (req, res)=>{
         let {id} = req.body
-        console.log(id)
+        await ItemDB.deleteOne({_id: id});
+        res.status(200).send({message: "Item deleted successfully"})
     }
-
 }
 
 module.exports = itemControler
