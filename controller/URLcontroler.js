@@ -2,6 +2,9 @@ const User = require('../module/userSchema');
 const Url = require('../module/URLSchema');
 const jwt = require("jsonwebtoken");
 const randomstring = require('randomstring');
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const SECRET_KEY = "APPLE";
 
@@ -47,14 +50,13 @@ const urlController = {
             }
             //BaseUrl to concat with RandomString
             
-            const BaseURL = `${process.env.BE_URL}/api/url`;
+            const BaseURL = `${process.env.BE_URL}/url`;
 
             //Getting the long URL from user
             const { longURL } = req.body;
 
             //To check whether the longUrl already exists            
             const url = await Url.find({ longURL });
-            console.log(longURL)
             let new_id;
             const one = url.map((i) => {
                 if ((i.user) == (req.params.id)) {
@@ -62,7 +64,7 @@ const urlController = {
                     new_id = i.user;
                 }
             })
-            //if Url exists   
+            //if Url exists
             if ((new_id) == (req.params.id)) {
                 res.status(200).json({ url })
             }
@@ -124,9 +126,24 @@ const urlController = {
 
             const urls = await Url.find({ user: (req.params.id) }).exec();
 
-            const monthlyurlcount = await Url.find({ $and: [{ user: (req.params.id) }, { month: month }] }).count();
+            // const monthlyurlcount = await Url.find({ $and: [{ user: (req.params.id) }, { month: month }] }).count();
 
-            const dayurlcount = await Url.find({ $and: [{ user: (req.params.id) }, { createdAt: fulldate }] }).count();
+            // const dayurlcount = await Url.find({ $and: [{ user: (req.params.id) }, { createdAt: fulldate }] }).count();
+
+            // const dayurlcount = await Url.find({ user: (req.params.id),  createdAt: fulldate }).count();
+            
+            monthlyurlcount = 0;
+            dayurlcount = 0
+            urls.map(e=>{
+                if(e.month == month){
+                    monthlyurlcount++;
+                }
+                
+                if(e.createdAt == fulldate){
+                    dayurlcount++;
+                }
+             
+            })
 
             if (urls) {
                 res.json({ urls, monthlyurlcount, dayurlcount });

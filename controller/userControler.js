@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
 const sendMail = require('./emailer');
 const { trusted } = require('mongoose');
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const SECRET_KEY = 'APPLE';
 
@@ -14,7 +17,7 @@ const userController = {
         try {
             
             const { name, email, password } = req.body;
-            console.log(name, email)
+            
             //check if the user already exists
             const existingUser = await User.findOne({ email });
 

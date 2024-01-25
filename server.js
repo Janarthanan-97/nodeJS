@@ -10,8 +10,8 @@ app.use(cors())
 
 
 
-app.use('/api/users', userRouter)
-app.use('/api/url', urlRouter)
+app.use('/users', userRouter)
+app.use('/url', urlRouter)
 
 
 
