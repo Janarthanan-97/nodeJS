@@ -15,6 +15,9 @@ const orderControler = {
             for (let i = 0; i < billItem.length; i++) {
                 let item = await ItemDB.findById(billItem[i].id)
                 let l = item.sale.length
+                if (item) {
+                    item.stock = item.stock - billItem[i].quantity
+                }
                 if(item.sale[l-1].date == date){
                    item.sale[l-1].quantity = item.sale[l-1].quantity + +billItem[i].quantity;
                    item.save()
