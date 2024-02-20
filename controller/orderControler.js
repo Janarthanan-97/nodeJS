@@ -28,7 +28,7 @@ const orderControler = {
             let order = await OrderDB.findOne({ customerNumber: customerNumber })
             if (order) {
                 order.orders.push(orders)
-                // order.save();
+                order.save();
                 res.status(200).send({ message: "Order updated successfully" })
             }
             else {
