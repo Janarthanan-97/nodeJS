@@ -8,12 +8,14 @@ const itemControler = {
         let item = await ItemDB.findOne({name: newItem.name});
         
         if(item){
-            // item.stock = await Number(item.stock) + Number(newItem.stock);
-            // item.price = newItem.price;
-            // item.save()
             res.status(200).send({message:"Item already exist"})
         }
        else{
+        let dd = new Date().getDate()
+        let mm = new Date().getMonth() + 1
+        let yy = new Date().getFullYear()
+        let date = `${dd}/${mm}/${yy}`
+        newItem = {...newItem, sale:[{date, quantity: 0}]}
         await ItemDB.create(newItem)
         res.status(200).send({message: "Item added successfully"})
        }
