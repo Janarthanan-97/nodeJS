@@ -67,16 +67,14 @@ const authUser = async (req, res)=>{
 }
 
 const allUsers = async (req, res)=>{
-  const keyword = req.body.keyword
-  let search = {}
-
-    if(keyword.indexOf('@') != -1){
-      search ={email: keyword}
-    }
-    else{
-      search = {name: keyword}
-    }
-   const user = await User.find(search).find({ _id: { $ne: req.user._id } })
+  const keyword = req.query.search ? {
+    $or: [
+      { name: { $regex: req.query.search, $options: "i" } },
+      { email: { $regex: req.query.search, $options: "i" } },
+    ],
+  } : {  }
+ 
+   const user = await User.find(keyword).find({ _id: { $ne: req.user._id } })
    res.send(user);
 
 
