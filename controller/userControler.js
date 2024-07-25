@@ -37,6 +37,7 @@ const registerUser = async (req , res)=>{
 
 const loginUser = async (req, res)=>{
   const { email, password } = req.body;
+  console.log(req.body)
   
   try {
     const user = await User.findOne({email});
@@ -71,9 +72,8 @@ const allUsers = async (req, res)=>{
  
    const user = await User.find(keyword).find({ _id: { $ne: req.user._id } })
    res.send(user);
-
-
-
 }
+
+
 
 module.exports = {registerUser, loginUser, allUsers}

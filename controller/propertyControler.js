@@ -11,18 +11,30 @@ const getProperties = async(req, res)=>{
 }
 const updateProperty = async(req, res)=>{
     const user = req.user._id
-    let { id, title, price, location, type, pic, sold, booked} = req.body
+    let { _id, title, price, location, type, pic, sold, booked} = req.body
+    // console.log(req.body)
    try {
-    if(id == ''){
+    if(_id == ''){
         let property = await Property.create({title,  price, location, type, pic, sold, user, booked})
         res.status(200).send("property created succesfully")
     }
     else{
-        let property = await Property.updateOne({_id: id}, {title, price, location, type, pic, sold, user, booked})    
+        let property = await Property.findByIdAndUpdate(_id, {
+            _id,
+             title, 
+             location,
+             type,
+             price,
+             pic,
+             sold,
+             booked,
+             user,
+            })    
         res.status(200).send("property updated succesfully")
     }
    } catch (error) {
-    
+    console.log(error)
+        res.status(401).send(error)
    }
 }
 
@@ -38,4 +50,18 @@ const getMyProperty = async(req, res)=>{
     
 }
 
-module.exports = {getProperties, updateProperty, getMyProperty}
+const getPropertyByID = async(req, res)=>{
+    let {id}= req.params
+    try {
+        let property = await Property.findById(id)
+        res.status(200).send(property)
+    } catch (error) {
+        res.status(401).send(error)
+    }
+}
+
+const deleteProperty = async(req, res)=>{
+    console.log(req.body)
+}
+
+module.exports = {getProperties, updateProperty, getMyProperty, getPropertyByID, deleteProperty}
