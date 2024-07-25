@@ -5,23 +5,18 @@ const generateToken = require('../Config/generateToken');
 
 
 const registerUser = async (req , res)=>{
-    const { name, email, password, pic } = req.body;
-    if (!name || !email || !password) {
-        res.status(400);
-        throw new Error("User already exists");
-      }
+    const { name, email, password } = req.body;
 
-      const userExists = await User.findOne({ email });
+      try {
+        const userExists = await User.findOne({ email });
       if (userExists) {
-        res.status(400);
-        throw new Error("User already exists");
+        res.status(400).send("User already exists");
       }
 
       const user = await User.create({
         name,
         email,
         password,
-        pic,
       });
 
       if(user){
@@ -29,23 +24,24 @@ const registerUser = async (req , res)=>{
           _id: user._id,
           name: user.name,
           email: user.email,
-          isAdmin: user.isAdmin,
-          pic: user.pic,
-          token: generateToken(user._id),
+          // token: generateToken(user._id),
         })
       }
       else {
-        res.status(400);
-        throw new Error("User not found");
-      }   
+        res.status(400).send("User not found");
+      } 
+      } catch (error) {
+        console.log(error)
+      }  
 }
 
-const authUser = async (req, res)=>{
+const loginUser = async (req, res)=>{
   const { email, password } = req.body;
-  const user = await User.findOne({email});
-  if(!user){
-    res.status(401);
-    throw new Error("Invalid Email");
+  
+  try {
+    const user = await User.findOne({email});
+  if(user == null){
+    res.status(400).send("Invalid Email")
   }
   if(password == user.password){
     res.status(200).send(
@@ -53,17 +49,16 @@ const authUser = async (req, res)=>{
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin,
-      pic: user.pic,
       token : generateToken(user._id)
      }
     )
   }
   else{
-    res.status(401);
-    throw new Error("Invalid Password");
+    res.status(401).send("Invalid Password");
   }
-
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const allUsers = async (req, res)=>{
@@ -81,4 +76,4 @@ const allUsers = async (req, res)=>{
 
 }
 
-module.exports = {registerUser, authUser, allUsers}
+module.exports = {registerUser, loginUser, allUsers}
