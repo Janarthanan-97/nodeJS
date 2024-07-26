@@ -61,7 +61,14 @@ const getPropertyByID = async(req, res)=>{
 }
 
 const deleteProperty = async(req, res)=>{
-    console.log(req.body)
+    const {id} = req.params
+    try {
+        let property = await Property.deleteOne({_id:id})
+        res.status(200).send("Deleted")
+
+    } catch (error) {
+        res.status(401).send(error)
+    }
 }
 
 module.exports = {getProperties, updateProperty, getMyProperty, getPropertyByID, deleteProperty}

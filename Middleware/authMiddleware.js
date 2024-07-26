@@ -7,7 +7,6 @@ const protect = async (req, res, next)=>{
     let {id} = jwt.verify(token, 'APPLE')
     req.user = await User.findById(id).select('-password')
     next()
-
 }
 
 module.exports = protect

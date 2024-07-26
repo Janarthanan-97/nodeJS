@@ -8,6 +8,6 @@ router.put('/', protect, getProperties);
 router.put('/update', protect, updateProperty);
 router.get('/my-property', protect, getMyProperty)
 router.get('/:id', protect, getPropertyByID)
-router.delete('/delete', deleteProperty)
+router.delete('/delete/:id',protect, deleteProperty)
 
 module.exports = router;
