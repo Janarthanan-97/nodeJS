@@ -11,14 +11,16 @@ const getProperties = async(req, res)=>{
 }
 const updateProperty = async(req, res)=>{
     const user = req.user._id
-    let { _id, title, price, location, type, pic, sold, booked} = req.body
-    // console.log(req.body)
+    let { id, title, price, location, type, pic, sold, booked} = req.body
+    
    try {
-    if(_id == ''){
+    if(id == ''){
         let property = await Property.create({title,  price, location, type, pic, sold, user, booked})
         res.status(200).send("property created succesfully")
+
     }
     else{
+        console.log(req.body)
         let property = await Property.findByIdAndUpdate(_id, {
             _id,
              title, 
