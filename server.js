@@ -1,28 +1,21 @@
-const express = require("express");
-const connectDB = require('./Config/db')
+const express = require('express')
 const cors = require('cors')
-const env = require('dotenv')
+const mongoose = require("mongoose")
+const { default: axios } = require('axios')
 
-env.config()
-
-
-
-const userRouters = require('./routes/userRoutes')
-const propertyRouters = require('./routes/propertyRoutes')
-
-
-const app = express();
+let app = express()
 app.use(cors())
+app.use(express.json())
 
-connectDB();
+app.get('/', async (req, res)=>{
+  try {
+    let {data} = await axios.get("http://192.168.1.7/blink")
+    res.send(data)
+  } catch (error) {
+    res.send(error)
+  }
+})
 
-app.use(express.json());
-
-app.use("/users", userRouters);
-app.use("/property", propertyRouters)
 
 
-const server = app.listen(
-  3000,
-  console.log(`Server running on PORT 3000...`)
-);
+app.listen(3000)
